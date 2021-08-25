@@ -1,3 +1,116 @@
+// // ---------------------- 1 ------------------------------ //
+// // let's start with an easy example on async/await.
+
+// async function firstExample() {
+//     let promise = new Promise((res, rej) => {
+//         setTimeout(() => res(111), 2000);
+//     });
+
+//     // here, instead of using a then block, we will use await.
+//     let result = await promise; // this line will wait until our promise resolves.
+
+//     console.log(result * 2);
+// }
+
+// firstExample();
+
+// // We may get this error if we forget to put async before a function. As stated earlier, await only works inside an async function.
+// // show without await keyword.
+
+
+
+// // ---------------------- 2 ------------------------------ //
+// // let's do our previous example again and convert it to async/await format.
+// // here is the code, getting the third user from a remote server.
+
+// let userFromRemote = fetch('https://jsonplaceholder.typicode.com/users/3')
+//   .then((response) => {
+//     console.log("!!!: ", response);
+
+//     if (response.status == 200) return response.json();
+//     else throw Error(response.status)
+//   })
+//   .then((json) => console.log("user: ", json))
+//   .catch(err => console.log("error: ", err));
+
+// console.log(userFromRemote);
+
+
+
+
+// // -------------------------- 3 -------------------------- //
+// // now, let's change our example.
+
+// async function userFromRemote() {
+
+//     let response = await fetch('https://jsonplaceholder.typicode.com/users/3');  // here, response will wait the outcome of the fetch function.
+
+//     let user = await response.json(); // and user will wait our resault to convert to json format.
+
+//     console.log(user);
+
+//     // let's improve our example.
+//     await new Promise( (reso, reje) => {
+//         setTimeout( reso, 5000);
+//     });
+
+//     console.log("after 5 secs.");
+// }
+
+// userFromRemote();
+
+
+
+
+// // ------------------------- 4 --------------------------- //
+// // what if an error occurs?
+
+// async function userFromRemote() {
+
+//     // i'm changing the path.
+//     let response = await fetch('https://jsonplaceholder.typicode.com/users!!!!!!!!!!!!/3');  
+
+//     let user = await response.json(); 
+
+//     console.log(user);
+
+
+// }
+
+// userFromRemote();
+
+
+
+
+// // ------------------------- 5 --------------------------- //
+// // let's catch the error. although we can use .catch method of our promise, the common way is using try...catch block.
+
+// async function userFromRemote() {
+
+//     try {
+
+//         let response = await fetch('https://jsonplaceholder.typicode.com/users!!!!!!!!!!!!/3');  
+
+//         if (!response.ok) throw new Error(response.status);
+
+//         let user = await response.json(); 
+
+//         console.log(user);
+
+//     } 
+//     catch (error) {
+//         console.log("!!! ", error);
+//     }
+
+// }
+
+// userFromRemote();
+
+
+
+
+// // ------------------------- EXERCISE --------------------------- //
+
 // today, we will do an exercise and use asyncrous calls for getting data from a remote server.
 // we will use fecth for accessing data.
 // we have talked about apis on the internet. let's check for free apis.
@@ -34,12 +147,12 @@ const renderCountry = (data, className = '') => {
 
 
 
-// today, we will focus on fetch which is more common. however, you can also check the old method, ajax calls on the internet as well.
+// today, we will focus on fetch which is more common. however, you can also check the other methods, such as ajax calls on the internet as well.
 
 
 // // ------------------------   1   ---------------------------- //
 // // let's start. first, we will define our url and assign it to a constant.
-// const countryURL = "https://restcountries.eu/rest/v2/name/turkey";
+const countryURL = "https://restcountries.eu/rest/v2/name/turkey";
 
 // // now we can get data from our remote server:
 // const countryRequest = fetch(countryURL);
@@ -49,6 +162,8 @@ const renderCountry = (data, className = '') => {
 // // state: two states, fulfilled or rejected.
 // // show from the slides.
 // // mention the status and ok
+
+
 
 
 // // ------------------------   2   ---------------------------- //
@@ -63,6 +178,8 @@ const renderCountry = (data, className = '') => {
 // // ok: false
 // // status: 404
 // // if the status is other than 200, then we have a problem.
+
+
 
 
 // // ------------------------   3   ---------------------------- //
@@ -83,13 +200,16 @@ const renderCountry = (data, className = '') => {
 //     // now, we have our data, then we can proccess this data by using our renderCountry function.
 //     renderCountry(data[0]); // highlight zero index by showing it on console.
 // });
+
 // // renderCountry fonksiyonunu then dışında deneyelim.
 // // renderCountry(data[0]);
 
 
-// ------------------------   4   ---------------------------- //
-// arrow fonksiyonunu normal fonksiyon olarak değiştirelim.
-// sonraki aşamada doğrudan fetch.then mantığını tekrar edebiliriz.
+
+
+// // ------------------------   4   ---------------------------- //
+// // arrow fonksiyonunu normal fonksiyon olarak değiştirelim.
+// // sonraki aşamada doğrudan fetch.then mantığını tekrar edebiliriz.
 
 // const countryRequest = fetch(countryURL).then( function(res, rej) {
 //     return res.json();
@@ -101,8 +221,9 @@ const renderCountry = (data, className = '') => {
 
 
 
+
 // // ------------------------   5   ---------------------------- //
-// // now let's create a function and put our code inside this function.
+// // now let's create a function and put our code inside this function for making our code more generic.
 
 // const getCountryData = (countryName) => {
 //     fetch(`https://restcountries.eu/rest/v2/name/${countryName}`)
@@ -119,6 +240,7 @@ const renderCountry = (data, className = '') => {
 // getCountryData("turkey");
 // getCountryData("usa");
 // getCountryData("canada");
+
 
 
 
@@ -143,12 +265,13 @@ const renderCountry = (data, className = '') => {
 
 
 
-// ------------------------   7   ---------------------------- //
-// we have not got any error yet. what if we have an error? before improving our example let me show you a rejected request on my slides.
+
+// // ------------------------   7   ---------------------------- //
+// // we have not got any error yet. what if we have an error? before improving our example let me show you a rejected request on my slides.
 
 
 // const getCountryData = ( (countryName) => {
-//     fetch(`https://restcountries.eu/rest/v2/nme/${countryName}`)
+//     fetch(`https://restcountries.eu/rest/v2/nme/${countryName}`)   // !!!!!! change: name ==> nme
 //         .then( function(response) {
 //             console.log(response);
 //             if (!response.ok) throw new Error(`response error: ${response.status}`)
@@ -162,17 +285,17 @@ const renderCountry = (data, className = '') => {
 //         .catch( (err) => console.log("********" + err))
 // });
 
-
 // getCountryData("canada");
 
 
 
-// ------------------------   8   ---------------------------- //
-// we are reading country data and inside this data there is a field named "border".
-// show this on chrome.
-// https://github.com/public-apis/public-apis
-// now let's read borders and render this data on our html.
-// let's create a new function...
+
+// // ------------------------   8   ---------------------------- //
+// // we are reading country data and inside this data there is a field named "border".
+// // show this on chrome.
+// // https://github.com/public-apis/public-apis
+// // now let's read borders and render this data on our html.
+// // let's create a new function...
 
 // const getCountryNeighbourData = (country) => {
 
@@ -215,9 +338,9 @@ const renderCountry = (data, className = '') => {
 
 
 
-// ------------------------   9   ---------------------------- //
-// as you see on our code there is a dublication. so, we can get rid of this stuation.
 
+// // ------------------------   9   ---------------------------- //
+// // as you see on our code there is a dublication. so, we can get rid of this stuation.
 
 // // first i will create a generic function for getting data of a specific country.
 // const getCountryJSONData = function(url, errorMsg = "!!! error !!!") {
@@ -261,11 +384,96 @@ const renderCountry = (data, className = '') => {
 
 
 
-// ------------------------   10   ---------------------------- //
-// up until now we have used default promises of the system. 
-// we can also create our promises.
+// ------------------------   TASK - 1   ---------------------------- //
+// i will give 20 mins for you to change our code with async/await, test it and one of you will explain his/her solution afterwards.
 
-// now, let's create a flipping coin simulation by using promises.
+// const getCountryNeighbourDataAsync = async (country) => {
+//         try {
+//             let response = await fetch(
+//                 `https://restcountries.eu/rest/v2/name/${country}`
+//             );
+//             console.log(response);
+//             // throw error
+//             if (response.status !== 200)
+//                 throw new Error(`${response.status} Error`);
+
+//             let data = await response.json();
+//             renderCountry(data[0]);
+
+//             const neighbour = data[0].borders[0];
+//             if (!neighbour) throw new Error('No neighbour');
+//             response = await fetch(
+//                 `https://restcountries.eu/rest/v2/alpha/${neighbour}`
+//             );
+
+//             if (response.status !== 200)
+//                 throw new Error(`${response.status} Error`);
+//             data = await response.json();
+
+//             renderCountry(data, 'neighbour');
+//             return data.name;
+//         } catch (err) {
+//             console.log(err.message);
+//         }
+//     };
+
+// getCountryNeighbourDataAsync("turkey");
+
+
+
+
+// ------------------------   TASK - 2   ---------------------------- //
+// instead of just one neighbour, change your code to read for all the neighbours and print them on the screen.
+// you have 20 mins.
+
+
+// const getCountryJSONData = function(url, errorMsg = "!!! error !!!") {
+//     return fetch(url).then( (response) => {
+//         if (!response.ok) throw new Error(`${errorMsg} error code: ${response.status}`);
+//         return response.json();
+//     })
+// };
+
+// const getCountryNeighbourDataAsync = async (country) => {
+//     try {
+//         let data = await getCountryJSONData(
+//             `https://restcountries.eu/rest/v2/name/${country}`,
+//             'No such country'
+//         );
+//         renderCountry(data[0]);
+//         console.log(data[0].borders);
+//         for (let i = 0; i < data[0].borders.length; i++) {
+//             const neighbour = data[0].borders[i];
+//             if (!neighbour) throw new Error('No neighbour');
+//             const nbdata = await getCountryJSONData(
+//                 `https://restcountries.eu/rest/v2/alpha/${neighbour}`,
+//                 'No neighbour data'
+//             );
+//             console.log(data);
+//             renderCountry(nbdata, 'neighbour');
+//         }
+//         return data.name;
+//     } catch (err) {
+//         console.log(err.message);
+//     }
+// };
+
+// getCountryNeighbourDataAsync('Turkey');
+
+
+
+
+
+
+
+
+
+
+// // ------------------------   10   ---------------------------- //
+// // up until now we have used default promises of the system. 
+// // we can also create our promises.
+
+// // now, let's create a flipping coin simulation by using promises.
 
 // const flipCoinPromise = new Promise((resolve, reject) => {
 //     console.log("flipping the coin...");
@@ -280,8 +488,8 @@ const renderCountry = (data, className = '') => {
 
 
 
-// ------------------------   11   ---------------------------- //
-// let's improve our example by using setTimeout function.
+// // ------------------------   11   ---------------------------- //
+// // let's improve our example by using setTimeout function.
 
 // const flipCoinPromise = new Promise((resolve, reject) => {
 //     console.log("flipping the coin...");
@@ -293,7 +501,66 @@ const renderCountry = (data, className = '') => {
 // flipCoinPromise
 //     .then( (res) => console.log(res))
 //     .catch((err) => console.log(err.message))
-// catch satırını iptal edip hatayı görelim.
+// // catch satırını iptal edip hatayı görelim.
+
+
+
+
+// // // ------------------------   12   ---------------------------- //
+// // // let's convert our code to async/await format
+
+// async function flip() {
+//         let flipPromise = await new Promise((resolve, reject) => {
+
+//             console.log("flipping the coin...");
+//             headortail = Math.random();
+//             console.log("headortail: ", headortail);
+
+//             if (headortail <= 0.5) return resolve("head comes. you win.");
+
+//             else return reject(new Error("tail comes. you lost!"));
+
+//         });
+
+//         let flipres = await flipPromise;
+//         console.log(flipPromise);
+// }
+
+// flip();
+
+
+
+
+// // ------------------------   13   ---------------------------- //
+// // let's add error handler by using try..catch block.
+
+
+// async function flip() {
+//     try {
+//         let flipPromise = await new Promise((resolve, reject) => {
+
+//             console.log("flipping the coin...");
+//             headortail = Math.random();
+//             console.log("headortail: ", headortail);
+
+//             if (headortail <= 0.5) return resolve("head comes. you win.");
+
+//             else return reject(new Error("tail comes. you lost!"));
+
+//         });
+
+//         let flipres = await flipPromise;
+//         console.log(flipPromise);
+
+//     } catch (error) {
+//         console.log(error.message);
+//     }
+// }
+
+// flip();
+
+
+
 
 
 
@@ -318,29 +585,29 @@ const renderCountry = (data, className = '') => {
 // ------------------------   13   ---------------------------- //
 // how can we implement this logic without callback hell?
 
-const wait = (seconds) => {
-    return new Promise((resolve) => {
-        setTimeout(resolve, seconds * 1000);
-    })
-};
+// const wait = (seconds) => {
+//     return new Promise((resolve) => {
+//         setTimeout(resolve, seconds * 1000);
+//     })
+// };
 
-wait(1)
-    .then(() => {
-        console.log("1 second passed");
-        return wait(1);
-    })
-    .then(() => {
-        console.log("2 seconds passed");
-        return wait(1)
-    })
-    .then(() => {
-        console.log("3 seconds passed");
-        return wait(1)
-    })
-    .then(() => {
-        console.log("4 seconds passed");
-        return wait(1)
-    })
+// wait(1)
+//     .then(() => {
+//         console.log("1 second passed");
+//         return wait(1);
+//     })
+//     .then(() => {
+//         console.log("2 seconds passed");
+//         return wait(1)
+//     })
+//     .then(() => {
+//         console.log("3 seconds passed");
+//         return wait(1)
+//     })
+//     .then(() => {
+//         console.log("4 seconds passed");
+//         return wait(1)
+//     })
 
 
 
